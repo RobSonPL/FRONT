@@ -4,7 +4,9 @@ import { VocItem, FaqItem, Language } from "../types";
 
 const MODEL_NAME = 'gemini-3-pro-preview';
 
-const getAi = () => new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+// Always create a new GoogleGenAI instance right before making an API call to ensure it uses the most up-to-date API key.
+// Must use a named parameter and obtain the API key exclusively from process.env.API_KEY.
+const getAi = () => new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 const getLanguageName = (lang: Language) => {
   const names = { pl: 'Polish', en: 'English', de: 'German', es: 'Spanish' };
@@ -22,6 +24,7 @@ export const generateSuggestion = async (field: string, context: string, lang: L
     model: MODEL_NAME,
     contents: prompt,
   });
+  // Use the .text property directly. Do not use response.text().
   return response.text?.replace(/^"|"$/g, '') || "";
 };
 
@@ -95,6 +98,7 @@ export const analyzeVoc = async (messages: string, lang: Language): Promise<VocI
     }
   });
   
+  // Extract the JSON string from response.text and parse it.
   return JSON.parse(response.text || "[]");
 };
 
