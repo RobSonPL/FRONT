@@ -1,31 +1,48 @@
 
 import React from 'react';
-import { StepId } from '../types';
+import { StepId, Language } from '../types';
+import { translations } from '../translations';
 
 interface LayoutProps {
   children: React.ReactNode;
   currentStep: StepId;
+  language: Language;
+  onLanguageChange: (lang: Language) => void;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, currentStep }) => {
-  const steps = [
-    "Diagnoza", "Mapa", "Manifest", "Dashboard", "Głos Klienta", "Samoobsługa", "Sprint", "Feedback", "Strategia"
-  ];
+const Layout: React.FC<LayoutProps> = ({ children, currentStep, language, onLanguageChange }) => {
+  const t = translations[language];
+  const steps = t.sidebar;
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-slate-50">
       {/* Sidebar with Dark Gradient */}
       <aside className="w-full md:w-72 bg-gradient-to-b from-slate-900 via-slate-900 to-blue-950 text-white p-8 sticky top-0 h-auto md:h-screen overflow-y-auto shadow-2xl z-10 flex flex-col">
-        <div className="mb-12">
+        <div className="mb-8">
           <h1 className="text-3xl font-extrabold tracking-tighter flex items-center gap-3">
             <span className="bg-blue-600 px-2.5 py-1 rounded-lg text-sm shadow-lg shadow-blue-500/20">AI</span> 
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">FRONT</span>
           </h1>
-          <p className="text-blue-400/80 text-[10px] mt-2 uppercase tracking-[0.2em] font-bold">Customer Experience OS</p>
+          <p className="text-blue-400/80 text-[10px] mt-2 uppercase tracking-[0.2em] font-bold">{t.app_subtitle}</p>
+        </div>
+
+        {/* Language Switcher */}
+        <div className="flex gap-2 mb-8 bg-white/5 p-1 rounded-lg border border-white/5">
+          {(['pl', 'en', 'de', 'es'] as Language[]).map(lang => (
+            <button
+              key={lang}
+              onClick={() => onLanguageChange(lang)}
+              className={`flex-1 py-1 px-2 rounded text-[10px] font-bold transition-all ${
+                language === lang ? 'bg-blue-600 text-white' : 'text-slate-500 hover:text-white hover:bg-white/10'
+              }`}
+            >
+              {lang.toUpperCase()}
+            </button>
+          ))}
         </div>
         
         <nav className="space-y-2 flex-1">
-          {steps.map((label, idx) => {
+          {steps.map((label: string, idx: number) => {
             const stepNum = idx + 1;
             const isActive = currentStep === stepNum;
             const isCompleted = currentStep > stepNum;
@@ -58,11 +75,11 @@ const Layout: React.FC<LayoutProps> = ({ children, currentStep }) => {
 
         <div className="mt-12 pt-8 border-t border-white/5 hidden md:block space-y-4">
           <div className="bg-white/5 rounded-2xl p-4 border border-white/5">
-            <p className="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-1">Silnik Systemu</p>
+            <p className="text-[10px] text-slate-500 uppercase font-bold tracking-widest mb-1">{t.engine}</p>
             <p className="text-xs text-slate-300 font-medium">Gemini 3 Pro Preview</p>
           </div>
           <div className="px-4 py-2">
-            <p className="text-[10px] text-slate-500 font-bold tracking-widest uppercase">Made by R | H</p>
+            <p className="text-[10px] text-slate-500 font-bold tracking-widest uppercase">{t.made_by}</p>
             <p className="text-[10px] text-slate-600 font-medium">2025</p>
           </div>
         </div>

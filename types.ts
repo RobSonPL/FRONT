@@ -11,8 +11,11 @@ export enum StepId {
   PROACTIVE = 9
 }
 
+export type Language = 'pl' | 'en' | 'de' | 'es';
+
 export interface AppState {
   currentStep: StepId;
+  language: Language;
   diagnosis: {
     feeling: string;
     goal: string;
